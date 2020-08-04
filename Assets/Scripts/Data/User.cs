@@ -38,7 +38,7 @@ public class User : ScriptableObject
     /// </summary>
     /// <param name="winInfo"></param>
     /// <param name="gameCardState"></param>
-    public void Update(WinInfo winInfo, GameCardState gameCardState)
+    public void UpdateUser(WinInfo winInfo, GameCardState gameCardState)
     {
         //TODO
     }

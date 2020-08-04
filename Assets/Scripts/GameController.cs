@@ -10,6 +10,7 @@ using UnityEngine;
 /// </summary>
 public class GameController : MonoBehaviour
 {
+    //Tracks Entries submitted by users for playing in the next round
     private List<(User user, GameCardState gameCardState)> roundEntries = new List<(User, GameCardState)>();
 
     void Start()
@@ -59,7 +60,7 @@ public class GameController : MonoBehaviour
         foreach (var entry in roundEntries)
         {
             WinInfo winInfo = EvalWin(targetState, entry.gameCardState);
-            entry.user.Update(winInfo, entry.gameCardState);
+            entry.user.UpdateUser(winInfo, entry.gameCardState);
         }
         FinishRound();
     }
@@ -71,7 +72,8 @@ public class GameController : MonoBehaviour
     /// <param name="targetState"></param>
     void AnimateToState(TargetState targetState)
     {
-    //TODO
+        //TODO
+        Debug.Log("TODO - AnimateToState");
     }
 
     /// <summary>
@@ -84,6 +86,7 @@ public class GameController : MonoBehaviour
     WinInfo EvalWin(TargetState targetState, GameCardState gameCardState)
     {
         //TODO
+        Debug.Log("TODO - EvalWin");
         return null;
     }
 
