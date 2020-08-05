@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 /// <summary>
@@ -22,6 +23,8 @@ public class GameController : MonoBehaviour
     //Tracks Entries submitted by users for playing in the next round
     private List<(User user, GameCardState gameCardState)> roundEntries = new List<(User, GameCardState)>();
 
+    private TargetState lastTargetState = null;
+
     void Start()
     {
         Debug.Log("GameController start"); 
@@ -39,12 +42,19 @@ public class GameController : MonoBehaviour
         //This can adapt to call PlayRound once ready
         Debug.Log("Creating target state");
         TargetState targetState = TargetState.FromSeed(1234);
+        lastTargetState = targetState;
         Debug.Log("Target state created");
 
         Debug.Log("Showing target draws");
         AnimateToState(targetState);
         Debug.Log("Done showing target draws");
 
+    }
+
+    public void _Dbg_Clear_Round()
+    {
+        Debug.Log("Debug clear round - TODO remove this code");
+        ClearRound();
     }
 
     /// <summary>
@@ -79,14 +89,16 @@ public class GameController : MonoBehaviour
     public void PlayRound(long seed)
     {
         Debug.Log("GameController PlayRound");
+        ClearRound();  //Maybe should clear last round a bit before starting this round?
         TargetState targetState = TargetState.FromSeed(seed);
+        lastTargetState = targetState;
         AnimateToState(targetState);
         foreach (var entry in roundEntries)
         {
             WinInfo winInfo = EvalWin(targetState, entry.gameCardState);
             entry.user.UpdateUser(winInfo, entry.gameCardState);
         }
-        FinishRound();
+        FinishRound(targetState);
     }
 
     /// <summary>
@@ -128,8 +140,22 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// Called at the end of a round to clean up state.
     /// </summary>
-    void FinishRound()
+    void FinishRound(TargetState targetState)
     {
         roundEntries.Clear();
+    }
+
+    void ClearRound()
+    {
+        if (lastTargetState != null)
+        {
+            Debug.Log("ClearRound");
+            int numRows = lastTargetState.GetNumRows();
+            for (int r = 0; r < numRows; r++)
+            {
+                beanRows[r].Reset();
+            }
+        }
+        lastTargetState = null;
     }
 }

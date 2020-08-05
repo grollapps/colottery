@@ -13,13 +13,12 @@ public class BeanRow : MonoBehaviour
     private Vector3 anchorPos;
 
     [SerializeField]
-    private float rowHeight;
-
-    [SerializeField]
     private float cellGap;
 
-    private int beanIndex = -1;
-    private Bean beanObj;
+    //These keep quick references to the current content
+    private int beanColIdx = -1;
+    private Bean beanObj = null;
+    private BeanGo beanGo = null;
 
     // Start is called before the first frame update
     void Start()
@@ -40,11 +39,17 @@ public class BeanRow : MonoBehaviour
     /// <param name="bean"></param>
     public void SetBean(Bean bean)
     {
-        BeanGo go = GameObject.Instantiate<BeanGo>(beanGoPrefab);
-        go.SetProps(bean);
+        if (beanGo != null)
+        {
+            throw new System.Exception("Previous bean in row not cleaned up: " + beanGo.name);
+        }
+
+        this.beanObj = bean;
+        beanGo = GameObject.Instantiate<BeanGo>(beanGoPrefab);
+        beanGo.SetProps(bean);
         //Validate col num here?
-        int colNum = BeanMap.GetColIndex(bean);
-        SetPosition(go.gameObject, colNum);
+        beanColIdx = BeanMap.GetColIndex(bean);
+        SetPosition(beanGo.gameObject, beanColIdx);
     }
 
     private void SetPosition(GameObject go, int colNum)
@@ -54,5 +59,17 @@ public class BeanRow : MonoBehaviour
         float y = anchorPos.y;
         float z = anchorPos.z;
         go.transform.position = new Vector3(x, y, z);
+    }
+
+    /// <summary>
+    /// Clear Row data.
+    /// </summary>
+    public void Reset()
+    {
+        Destroy(beanGo.gameObject);
+        beanGo = null;
+        beanColIdx = -1;
+        //unsure if the SO needs to be deleted or if it is one shared instance?
+        beanObj = null;
     }
 }
