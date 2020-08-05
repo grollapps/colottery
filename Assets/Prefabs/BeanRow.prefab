@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021036515664172561}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -44,6 +44,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beanGoPrefab: {fileID: 1243859388253653825, guid: 366e1576d8625104bb0b4d4aa2b29ccd, type: 3}
-  anchorPos: {x: 0, y: 0, z: 0}
-  rowHeight: 10
-  cellGap: 20
+  rowHeight: 2
+  cellGap: 1.9

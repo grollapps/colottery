@@ -118,8 +118,33 @@ public class TargetState : ScriptableObject
     {
         //TODO randomize return value according to seed
         Debug.Log("TODO - GetBeanForRow - randomize");
-        Bean result = ScriptableObject.CreateInstance<RedBean>();
-        return result;
+        int numRows = 10; //
+        int randResult =  UnityEngine.Random.Range(0, numRows);
+        Bean resultBean = null;
+        //TODO - numColors should be based on colors in row
+        int numColors = 5;
+        switch (randResult % numColors) {
+            case BeanMap.RED_IDX:
+                resultBean = ScriptableObject.CreateInstance<RedBean>();
+                break;
+
+            case BeanMap.YELLOW_IDX:
+                resultBean = ScriptableObject.CreateInstance<YellowBean>();
+                break;
+
+            case BeanMap.PURPLE_IDX:
+                resultBean = ScriptableObject.CreateInstance<PurpleBean>();
+                break;
+
+            case BeanMap.GREEN_IDX:
+                resultBean = ScriptableObject.CreateInstance<GreenBean>();
+                break;
+
+            case BeanMap.WHITE_IDX:
+                resultBean = ScriptableObject.CreateInstance<WhiteBean>();
+                break;
+        }
+        return resultBean;
     }
 
     /// <summary>

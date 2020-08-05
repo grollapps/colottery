@@ -9,7 +9,7 @@ public class BeanGo : MonoBehaviour
     public void SetProps(Bean bean)
     {
         props = bean;
-        gameObject.GetComponent<Material>().color = props.GetColorValue();
+        gameObject.GetComponent<Renderer>().material.color = props.GetColorValue();
 
     }
 

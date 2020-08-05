@@ -10,7 +10,6 @@ public class BeanRow : MonoBehaviour
     [SerializeField]
     private BeanGo beanGoPrefab;
 
-    [SerializeField]
     private Vector3 anchorPos;
 
     [SerializeField]
@@ -25,6 +24,7 @@ public class BeanRow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        anchorPos = transform.position;
         
     }
 
@@ -44,15 +44,15 @@ public class BeanRow : MonoBehaviour
         go.SetProps(bean);
         //Validate col num here?
         int colNum = BeanMap.GetColIndex(bean);
-        SetPosition(colNum);
+        SetPosition(go.gameObject, colNum);
     }
 
-    private void SetPosition(int colNum)
+    private void SetPosition(GameObject go, int colNum)
     {
         //assumes rows span across the page
         float x = anchorPos.x + (colNum * cellGap);
         float y = anchorPos.y;
         float z = anchorPos.z;
-        transform.position = new Vector3(x, y, z);
+        go.transform.position = new Vector3(x, y, z);
     }
 }

@@ -35,7 +35,16 @@ public class GameController : MonoBehaviour
     //TODO - remove, debug only
     public void _Dbg_Start_Round()
     {
-        Debug.Log("Debug start round - TODO remove");
+        Debug.Log("Debug start round - TODO remove this code");
+        //This can adapt to call PlayRound once ready
+        Debug.Log("Creating target state");
+        TargetState targetState = TargetState.FromSeed(1234);
+        Debug.Log("Target state created");
+
+        Debug.Log("Showing target draws");
+        AnimateToState(targetState);
+        Debug.Log("Done showing target draws");
+
     }
 
     /// <summary>

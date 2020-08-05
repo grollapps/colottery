@@ -9,12 +9,12 @@ using System;
 /// </summary>
 public class BeanMap
 {
-    //Quick LUT for color indices
+    //Quick LUT for color indices (map color index to column). Must be unique.
     public const short RED_IDX = 0;
-    public const short YELLOW_IDX = 0; 
-    public const short PURPLE_IDX = 0;
-    public const short GREEN_IDX = 0;
-    public const short WHITE_IDX = 0;
+    public const short YELLOW_IDX = 1; 
+    public const short PURPLE_IDX = 2;
+    public const short GREEN_IDX = 3;
+    public const short WHITE_IDX = 4;
 
     public static string GetColorForIndex(short idx)
     {
