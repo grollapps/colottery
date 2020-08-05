@@ -4,16 +4,20 @@ using System.Collections;
 public class BeanGo : MonoBehaviour
 {
 
-    [SerializeField]
     private Bean props;
 
-    // Use this for initialization
+    public void SetProps(Bean bean)
+    {
+        props = bean;
+        gameObject.GetComponent<Material>().color = props.GetColorValue();
+
+    }
+
     void Start()
     {
 
     }
 
-    // Update is called once per frame
     void Update()
     {
 

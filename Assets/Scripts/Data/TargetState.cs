@@ -69,6 +69,27 @@ public class TargetState : ScriptableObject
         return result;
     }
 
+    public int GetNumRows()
+    {
+        return draws.Length;
+    }
+
+    /// <summary>
+    /// Get the drawing result for the given row.
+    /// Assumes the TargetState is already initialized.
+    /// </summary>
+    /// <param name="row"></param>
+    /// <returns></returns>
+    public Bean GetDrawForRow(int row)
+    {
+        if (row >= draws.Length || draws[row] == null)
+        {
+            throw new Exception("Invalid draw row " + row + " (forgot to do drawing first?)");
+        }
+        return draws[row];
+    }
+
+
     /// <summary>
     /// Do a drawing for the 'second chance' bean given a seed.  It is possible
     /// the second chance does not yield a draw in which case the returned bean
@@ -87,6 +108,12 @@ public class TargetState : ScriptableObject
         return (draw, row);
     }
 
+    /// <summary>
+    /// Performs a single drawing for the specified row
+    /// </summary>
+    /// <param name="seed"></param>
+    /// <param name="rowNum"></param>
+    /// <returns></returns>
     private static Bean GetBeanForRow(long seed, int rowNum)
     {
         //TODO randomize return value according to seed

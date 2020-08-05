@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 4842149927481788900}
   - component: {fileID: 1938369669804593376}
   - component: {fileID: 2465580640809124361}
-  - component: {fileID: 1616564313353400789}
+  - component: {fileID: 1243859388253653825}
   m_Layer: 0
-  m_Name: RedBean
+  m_Name: BeanPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -97,7 +97,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1616564313353400789
+--- !u!114 &1243859388253653825
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,4 +109,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3b64d27cdad7be4ca88203e08d62334, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  props: {fileID: 11400000, guid: 431c64279a34fc647b02703d2ed5ef37, type: 2}

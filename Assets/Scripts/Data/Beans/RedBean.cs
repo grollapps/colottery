@@ -9,4 +9,8 @@ public class RedBean : Bean
     {
         colorId = "red";
     }
+    public override Color GetColorValue()
+    {
+        return new Color(1.0f, 0.0f, 0.0f);
+    }
 }

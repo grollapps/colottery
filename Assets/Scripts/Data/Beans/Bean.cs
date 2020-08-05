@@ -10,7 +10,19 @@ using UnityEditor;
 public abstract class Bean : ScriptableObject
 {
 
+    //colorId is a string like "red" or "yellow" that specifically identifies this bean (unique per row, only)
     protected string colorId;
+
+    /// <summary>
+    /// Returns named color, unique to this bean.
+    /// </summary>
+    /// <returns></returns>
+    public string GetColorName()
+    {
+        return colorId;
+    }
+
+    public abstract Color GetColorValue();
 
     public bool IsEqual(Bean other)
     {

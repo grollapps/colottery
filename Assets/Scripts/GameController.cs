@@ -7,9 +7,18 @@ using UnityEngine;
 /// The actual game is broken into discrete "Rounds" in which a target state is generated
 /// and compared against submitted player GameCardState(s) for that round.  Each round
 /// evaluates win/loss values and assigns those back to the player.
+///
+/// The Game layout consists of this GameController driving the execution and displaying 
+/// the results in objects contained in an instance.  The target draws are displayed
+/// by a collection of BeanRows that each show a bean as it is drawn (selected randomly).
+/// A BeanRow renders in the target as a BeanGo which positions the data in the game world.
 /// </summary>
 public class GameController : MonoBehaviour
 {
+    //Statis bean rows that display the target draws
+    [SerializeField]
+    private List<BeanRow> beanRows;
+
     //Tracks Entries submitted by users for playing in the next round
     private List<(User user, GameCardState gameCardState)> roundEntries = new List<(User, GameCardState)>();
 
@@ -21,6 +30,12 @@ public class GameController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    //TODO - remove, debug only
+    public void _Dbg_Start_Round()
+    {
+        Debug.Log("Debug start round - TODO remove");
     }
 
     /// <summary>
@@ -74,6 +89,17 @@ public class GameController : MonoBehaviour
     {
         //TODO
         Debug.Log("TODO - AnimateToState");
+
+        //TODO - For now we will just show the ending positions
+        int numRows = targetState.GetNumRows();
+        for (int r = 0; r < numRows; r++)
+        {
+            Debug.Log("Update target row " + r);
+            Bean rBean = targetState.GetDrawForRow(r);
+            beanRows[r].SetBean(rBean);
+        }
+        Debug.Log("TODO - show second chance");
+        Debug.Log("TODO - show flush");
     }
 
     /// <summary>
