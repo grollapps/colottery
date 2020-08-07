@@ -19,6 +19,10 @@ public class ActiveGameCard : MonoBehaviour
     private const int maxBetIndex = 3; //3 bets, $1, $2, $5
     private int numRows;
 
+    private GameController gameController;
+
+    private User user;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +41,19 @@ public class ActiveGameCard : MonoBehaviour
 
         betIdxSelected = -1;
         betButton = null;
+
+        gameController = FindObjectOfType<GameController>();
+        if (gameController == null)
+        {
+            throw new System.Exception("Could not find game controller: " + gameObject.name);
+        }
+
+        //There's only one user in our prototype
+        user = gameController.GetUser();
+        if (user == null)
+        {
+            throw new System.Exception("Could not find User instance: " + gameObject.name);
+        }
         
     }
 
@@ -46,6 +63,56 @@ public class ActiveGameCard : MonoBehaviour
         
     }
 
+    public void handleSubmit()
+    {
+        Debug.Log("handleSubmit");
+        GameCardState gameCard = CreateGameCard();
+        //TODO might want to check that everything is filled in
+        gameController.EnterNextRound(user, gameCard);
+    }
+
+    /// <summary>
+    /// Takes the current user selections and turns them into
+    /// a GameCardState for submission.
+    /// </summary>
+    /// <returns></returns>
+    private GameCardState CreateGameCard()
+    {
+        GameCardState gc = new GameCardState();
+        Bean[] choices = new Bean[numRows];
+        for (int r = 0; r < choices.Length; r++)
+        {
+            Bean curBean = null;
+            switch (rowSelections[r])
+            {
+                case BeanMap.RED_IDX:
+                    curBean = ScriptableObject.CreateInstance<RedBean>();
+                    break;
+
+                case BeanMap.YELLOW_IDX:
+                    curBean = ScriptableObject.CreateInstance<YellowBean>();
+                    break;
+
+                case BeanMap.PURPLE_IDX:
+                    curBean = ScriptableObject.CreateInstance<PurpleBean>();
+                    break;
+
+                case BeanMap.GREEN_IDX:
+                    curBean = ScriptableObject.CreateInstance<GreenBean>();
+                    break;
+
+                case BeanMap.WHITE_IDX:
+                    curBean = ScriptableObject.CreateInstance<WhiteBean>();
+                    break;
+
+            }
+            choices[r] = curBean;
+        }
+        float betAmt = BetMap.GetBetFromIdx(betIdxSelected);
+        gc.FillCard(choices, isSecChanceSelected, betAmt);
+
+        return gc;
+    }
 
     /// <summary>
     /// Selects a position on the gamecard givena button corresponding

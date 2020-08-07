@@ -9,6 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 261b745aee11ec248b0944aca33a3abe, type: 3}
-  m_Name: ARedBean
+  m_Script: {fileID: 11500000, guid: 67ac41cae6ca03e4bad4cccba442a5fb, type: 3}
+  m_Name: DefaultGameUser
   m_EditorClassIdentifier: 
+  userName: You
+  stats: {fileID: 11400000, guid: 25bce8d67b88a5d44bf68556d34e6fb3, type: 2}
+  curBank: 200

@@ -5,7 +5,7 @@ using System;
 /// <summary>
 /// The state submitted as a playable entry on behalf of a user.
 /// </summary>
-public class GameCardState : ScriptableObject
+public class GameCardState
 {
     //TODO fields:
     //selections, secondChance, bet amount, total wager, etc

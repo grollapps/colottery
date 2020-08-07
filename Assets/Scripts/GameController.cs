@@ -25,14 +25,50 @@ public class GameController : MonoBehaviour
 
     private TargetState lastTargetState = null;
 
+    [SerializeField]
+    private ActiveGameCard curGameCard;
+
+    //Stub user for this prototype
+    [SerializeField]
+    private User user;
+
     void Start()
     {
         Debug.Log("GameController start"); 
+        if (user == null)
+        {
+            throw new System.Exception("Could not find User instance: " + gameObject.name);
+        }
+
+        if (curGameCard == null)
+        {
+            throw new System.Exception("No game card set: " + gameObject.name);
+        }
     }
 
     void Update()
     {
         
+    }
+
+    /// <summary>
+    /// Button handler for submitting a completed game card entry.
+    /// </summary>
+    public void HandleSubmitGameCard()
+    {
+        Debug.Log("HandleSubmitGameCard");
+        curGameCard.handleSubmit();
+    }
+
+    /// <summary>
+    /// Return the one user for the prototype game.
+    /// A user simply identifies one particular unique entity that
+    /// can submit game entries.
+    /// </summary>
+    /// <returns></returns>
+    public User GetUser()
+    {
+        return user;
     }
 
     //TODO - remove, debug only

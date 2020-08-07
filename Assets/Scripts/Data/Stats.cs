@@ -4,6 +4,7 @@ using UnityEditor;
 /// <summary>
 /// General game stats defined for a single user.
 /// </summary>
+[CreateAssetMenu(fileName ="AStats", menuName ="User Stats", order = 53)]
 public class Stats : ScriptableObject
 {
     public float winRate;
