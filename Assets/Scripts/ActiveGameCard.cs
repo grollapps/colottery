@@ -16,7 +16,7 @@ public class ActiveGameCard : MonoBehaviour
     private int betIdxSelected;
     private FillButton betButton;
 
-    private const int maxBetIndex = 2; //3 bets, $1, $2, $5
+    private const int maxBetIndex = 3; //3 bets, $1, $2, $5
     private int numRows;
 
     // Start is called before the first frame update
