@@ -54,7 +54,8 @@ public class ActiveGameCard : MonoBehaviour
         {
             throw new System.Exception("Could not find User instance: " + gameObject.name);
         }
-        
+
+        UpdateTotalWager();
     }
 
     // Update is called once per frame
@@ -110,6 +111,7 @@ public class ActiveGameCard : MonoBehaviour
         }
         float betAmt = BetMap.GetBetFromIdx(betIdxSelected);
         gc.FillCard(choices, isSecChanceSelected, betAmt);
+        UpdateTotalWager();
 
         return gc;
     }
@@ -143,6 +145,7 @@ public class ActiveGameCard : MonoBehaviour
         btn.SetSelected(true);
         rowButtons[row] = btn;
         rowSelections[row] = col;
+        UpdateTotalWager();
 
     }
     public void SelectBetIndex(FillButton btn, int betIndex)
@@ -166,6 +169,7 @@ public class ActiveGameCard : MonoBehaviour
         btn.SetSelected(true);
         betButton = btn;
         betIdxSelected = betIndex;
+        UpdateTotalWager();
     }
 
     public void SelectSecondChance(FillButton btn)
@@ -175,11 +179,22 @@ public class ActiveGameCard : MonoBehaviour
         {
             Debug.Log("Unselecting second chance button");
             secChanceButton.SetSelected(false);
+            isSecChanceSelected = false;
             secChanceButton = null;
         } else {
             Debug.Log("Selecting second change button");
             btn.SetSelected(true);
+            isSecChanceSelected = true;
             this.secChanceButton = btn;
         }
+        UpdateTotalWager();
+    }
+
+    private void UpdateTotalWager()
+    {
+        float betVal = BetMap.GetBetFromIdx(betIdxSelected);
+        float secChanceVal = isSecChanceSelected ? GameConstants.SECOND_CHANCE_COST : 0;
+        float totalWager = betVal + secChanceVal;
+        UIController.Instance.SetWagerText(totalWager);
     }
 }

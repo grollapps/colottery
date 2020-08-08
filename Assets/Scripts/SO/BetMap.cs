@@ -12,12 +12,14 @@ public class BetMap : ScriptableObject
     /// <summary>
     /// Converts a bet index (arbitrary assignment) into
     /// a dollar amount represented by that index.
+    /// If the index does not represent a valid bet then 
+    /// zero is returned.
     /// </summary>
     /// <param name="idx"></param>
     /// <returns></returns>
     public static float GetBetFromIdx(int idx)
     {
-        float result = -1.0f;
+        float result = 0.0f;
         switch (idx)
         {
             case BET_ONE_IDX:

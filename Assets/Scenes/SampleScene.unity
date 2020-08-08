@@ -2241,7 +2241,7 @@ GameObject:
   - component: {fileID: 1187546120}
   - component: {fileID: 1187546119}
   m_Layer: 5
-  m_Name: Bank
+  m_Name: BankText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2308,6 +2308,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1187546117}
   m_CullTransparentMesh: 0
+--- !u!1 &1214060054
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1214060056}
+  - component: {fileID: 1214060055}
+  m_Layer: 0
+  m_Name: UIController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1214060055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214060054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad3873a5da35f14c9cb519497ade3f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  user: {fileID: 649047295}
+  bankText: {fileID: 1187546119}
+  lastWinText: {fileID: 1350236488}
+  wagerText: {fileID: 1490908847}
+--- !u!4 &1214060056
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214060054}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 774.46344, y: 398.75485, z: -179.5432}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1229723240
 GameObject:
   m_ObjectHideFlags: 0
@@ -2578,7 +2625,7 @@ GameObject:
   - component: {fileID: 1350236489}
   - component: {fileID: 1350236488}
   m_Layer: 5
-  m_Name: Bank
+  m_Name: WinText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2748,7 +2795,7 @@ GameObject:
   - component: {fileID: 1490908848}
   - component: {fileID: 1490908847}
   m_Layer: 5
-  m_Name: Wager
+  m_Name: WagerText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
