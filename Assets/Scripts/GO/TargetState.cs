@@ -71,6 +71,53 @@ public class TargetState : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// Debug method to create a target state with the given colors.
+    /// color-index is the row to populate, value is the color for that row.
+    /// </summary>
+    /// <param name="colors"></param>
+    /// <returns></returns>
+    public static TargetState _Dbg_FromColors(int[] colors, int secChanceColIdx, int secChanceRow)
+    {
+        Debug.Log("Debug Create TargetState FromColors - TODO remove");
+
+        GameObject newGo = new GameObject();
+        
+        TargetState result = newGo.AddComponent<TargetState>();
+        const int rowCount = GameConstants.NUM_GAME_ROWS;
+        Bean lastBean = null;
+        bool matchesBean = true;
+        //Draw initial beans
+        for (int i = 0; i < rowCount; i++)
+        {
+            result.draws[i] = GetBeanByColorIndex(colors[i]);
+            if (i == 0)
+            {
+                lastBean = result.draws[i];
+            }
+            else
+            {
+                //check for flush -- all beans must match the first
+                bool match = lastBean.IsEqual(result.draws[i]);
+                matchesBean = matchesBean && match;
+            }
+        }
+
+        //Set flush params
+        result.hasFlush = matchesBean;
+        if (result.hasFlush)
+        {
+            result.flushBeanMatch = lastBean;
+        }
+
+        //set second chance as the "last" new row
+        result.secondChanceDraw.bean = GetBeanByColorIndex(secChanceColIdx);
+        result.secondChanceDraw.row = secChanceRow;
+        result.hasSecondChance = result.secondChanceDraw.row != -1;
+
+        return result;
+    }
+
     public int GetNumRows()
     {
         return draws.Length;
@@ -146,10 +193,20 @@ public class TargetState : MonoBehaviour
         Debug.Log("TODO - GetBeanForRow - randomize");
         int numRows = 10; //
         int randResult =  UnityEngine.Random.Range(0, numRows);
-        Bean resultBean = null;
         //TODO - numColors should be based on colors in row
         int numColors = 5;
-        switch (randResult % numColors) {
+        Bean resultBean = GetBeanByColorIndex(randResult % numColors);
+        return resultBean;
+    }
+
+    /// <summary>
+    /// Creates a bean instance from its color index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    private static Bean GetBeanByColorIndex(int index) {
+        Bean resultBean = null;
+        switch (index) {
             case BeanMap.RED_IDX:
                 resultBean = ScriptableObject.CreateInstance<RedBean>();
                 break;
@@ -170,6 +227,11 @@ public class TargetState : MonoBehaviour
                 resultBean = ScriptableObject.CreateInstance<WhiteBean>();
                 break;
         }
+
+        if (resultBean == null)
+        {
+            throw new SystemException("Invalid bean index: " + index);
+        }
         return resultBean;
     }
 
@@ -183,5 +245,15 @@ public class TargetState : MonoBehaviour
         //TODO - randomize result according to seed
         Debug.Log("TODO - GetRandomRow - randomize");
         return 0;
+    }
+
+    public bool HasFlush()
+    {
+        return hasFlush;
+    }
+
+    public Bean GetFlushColorBean()
+    {
+        return flushBeanMatch;
     }
 }

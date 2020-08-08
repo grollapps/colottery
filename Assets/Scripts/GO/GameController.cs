@@ -90,6 +90,7 @@ public class GameController : MonoBehaviour
     public void _Dbg_Start_Round()
     {
         Debug.Log("Debug start round - TODO remove this code");
+        ClearRound();
         //This can adapt to call PlayRound once ready
         Debug.Log("Creating target state");
         TargetState targetState = TargetState.FromSeed(1234);
@@ -100,6 +101,7 @@ public class GameController : MonoBehaviour
         AnimateToState(targetState);
         Debug.Log("Done showing target draws");
 
+        PlayRoundEnd();
     }
 
     public void _Dbg_Clear_Round()
@@ -108,12 +110,41 @@ public class GameController : MonoBehaviour
         ClearRound();
     }
 
+    /// <summary>
+    /// Test method to immediate draw a flush target state.
+    /// </summary>
+    public void _Dbg_Draw_Flush()
+    {
+        Debug.Log("Debug draw flush - TODO  remove this code");
+        ClearRound();
+        //Creates a random color flush
+        int numRows = GameConstants.NUM_GAME_ROWS;
+        int randColor = UnityEngine.Random.Range(0, numRows);
+        int[] colors = new int[numRows];
+        for (int i = 0; i < colors.Length; i++)
+        {
+            colors[i] = randColor;
+        }
+        int secChanceColIdx = 0;
+        int secChanceRow = 3;
+        TargetState targetState = TargetState._Dbg_FromColors(colors, secChanceColIdx, secChanceRow);
+        lastTargetState = targetState;
+
+        Debug.Log("Showing target draws");
+        AnimateToState(targetState);
+        Debug.Log("Done showing target draws");
+
+        PlayRoundEnd();
+    }
+
+
     public void HandleTimerExpire()
     {
         Debug.Log("HandleTimerExpire");
         Debug.Log("TODO - random seed");
         long seed = 1234;
-        PlayRound(seed);
+        PlayRoundStart(seed);
+        PlayRoundEnd();
     }
 
     /// <summary>
@@ -156,28 +187,36 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// Plays out a single round of the game.  User entries must be submitted
+    /// Begins playing out a single round of the game.  User entries must be submitted
     /// before this is called.
     /// Generates a target state from the given seed.  Triggers animations to
-    /// show the round.  Evaluates target state vs user submissions and updates
-    /// win/losses accordingly.
+    /// show the round.  
+    /// The round is not concluded until PlayRoundEnd() is called.
     /// </summary>
     /// <param name="seed"></param>
-    public void PlayRound(long seed)
+    public void PlayRoundStart(long seed)
     {
         Debug.Log("GameController PlayRound");
         ClearRound();  //Maybe should clear last round a bit before starting this round?
         TargetState targetState = TargetState.FromSeed(seed);
         lastTargetState = targetState;
         AnimateToState(targetState);
+    }
+
+    /// <summary>
+    /// Finishes the current round started with PlayRoundStart().
+    /// Calculates user wins and cleans up state to prepare for the next round.
+    /// </summary>
+    private void PlayRoundEnd()
+    {
         float totalUserWin = 0;
         foreach (var entry in roundEntries)
         {
-            WinInfo winInfo = EvalWin(targetState, entry.gameCardState);
+            WinInfo winInfo = EvalWin(lastTargetState, entry.gameCardState);
             totalUserWin += entry.user.UpdateUser(winInfo, entry.gameCardState);
         }
         UIController.Instance.SetLastWinText(totalUserWin);
-        FinishRound(targetState);
+        FinishRound(lastTargetState);
     }
 
     /// <summary>
@@ -255,7 +294,7 @@ public class GameController : MonoBehaviour
             throw new System.Exception("Invalid bet index: " + betIdx);
         }
 
-        bool flushWon = false;
+        bool flushWon = targetState.HasFlush();
         float flushWinAmt = 0;
         if (flushWon)
         {
