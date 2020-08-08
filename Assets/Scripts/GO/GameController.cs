@@ -55,6 +55,9 @@ public class GameController : MonoBehaviour
 
         UpdateUserBankText(user);
         UpdateWinText(null);
+
+        //Initially the timer will be counting down
+        timer.StartTimer();
     }
 
     void Update()

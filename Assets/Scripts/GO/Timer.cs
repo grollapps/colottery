@@ -66,6 +66,15 @@ public class Timer : MonoBehaviour
         UIController.Instance.SetRemainingTimeText(remainingSeconds);
     }
 
+    /// <summary>
+    /// Start or stop the timer.
+    /// </summary>
+    public void ToggleTimer()
+    {
+        Debug.Log("ToggleTimer");
+        running = !running;
+    }
+
     public void StartTimer()
     {
         Debug.Log("Start Timer");
