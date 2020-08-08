@@ -13,4 +13,6 @@ public class GameConstants
     //or otherwise scale to calculated correct payouts -- TBD
     public const int SECOND_CHANCE_COST = 1;
 
+    public const int SEC_BETWEEN_ROUNDS = 4 * 60; //4 mins
+
 }

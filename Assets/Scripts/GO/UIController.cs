@@ -24,6 +24,9 @@ public class UIController : MonoBehaviour
     [SerializeField]
     private Text wagerText;
 
+    [SerializeField]
+    private Text timerText;
+
     void Awake()
     {
         if (_instance != null && _instance != this)
@@ -60,12 +63,22 @@ public class UIController : MonoBehaviour
             throw new System.Exception("No wagerText: " + gameObject.name);
         }
         
+        if (timerText == null)
+        {
+            throw new System.Exception("No timerText: " + gameObject.name);
+        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void SetRemainingTimeText(float remainingSeconds)
+    {
+        timerText.text = FormatTime(remainingSeconds);
     }
 
     public void SetWagerText(float value)
@@ -86,5 +99,16 @@ public class UIController : MonoBehaviour
     private string FormatMoney(float input)
     {
         return "$" + input.ToString("F");
+    }
+
+    private string FormatTime(float seconds)
+    {
+        int wholeSec = Mathf.CeilToInt(seconds);
+        int mins = Mathf.FloorToInt(wholeSec / 60);
+        int secPart = wholeSec % 60;
+        //Debug.Log("Seconds: " + seconds);
+        //Debug.Log("mins: " + mins + ", secPart: " + secPart);
+        return string.Format("{0,0:D1}:{1,0:D2}", mins, secPart);
+
     }
 }

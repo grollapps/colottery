@@ -32,6 +32,9 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private User user;
 
+    [SerializeField]
+    private Timer timer;
+
     void Start()
     {
         Debug.Log("GameController start"); 
@@ -43,6 +46,11 @@ public class GameController : MonoBehaviour
         if (curGameCard == null)
         {
             throw new System.Exception("No game card set: " + gameObject.name);
+        }
+
+        if (timer == null)
+        {
+            throw new System.Exception("No timer set: " + gameObject.name);
         }
 
         UpdateUserBankText(user);
@@ -94,6 +102,14 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("Debug clear round - TODO remove this code");
         ClearRound();
+    }
+
+    public void HandleTimerExpire()
+    {
+        Debug.Log("HandleTimerExpire");
+        Debug.Log("TODO - random seed");
+        long seed = 1234;
+        PlayRound(seed);
     }
 
     /// <summary>
@@ -200,6 +216,7 @@ public class GameController : MonoBehaviour
     void FinishRound(TargetState targetState)
     {
         roundEntries.Clear();
+        timer.Reset(true);
     }
 
     void ClearRound()

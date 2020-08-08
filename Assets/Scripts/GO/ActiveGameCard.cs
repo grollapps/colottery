@@ -66,9 +66,10 @@ public class ActiveGameCard : MonoBehaviour
 
     public void handleSubmit()
     {
-        Debug.Log("handleSubmit");
+        Debug.Log("handleSubmit active game card");
         GameCardState gameCard = CreateGameCard();
         //TODO might want to check that everything is filled in
+        Debug.Log("TODO error check");
         gameController.EnterNextRound(user, gameCard);
     }
 
