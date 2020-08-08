@@ -4,8 +4,7 @@ using UnityEditor;
 /// <summary>
 /// Data related specifically to a user
 /// </summary>
-[CreateAssetMenu(fileName ="AUser", menuName ="Game User", order = 52)]
-public class User : ScriptableObject
+public class User : MonoBehaviour
 {
     public string userName = "You";
     public Stats stats;

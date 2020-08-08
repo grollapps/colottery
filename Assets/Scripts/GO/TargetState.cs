@@ -7,7 +7,7 @@ using System;
 /// end of a round.  Inputs that match the target state are winning inputs
 /// (as defined by the game engine).
 /// </summary>
-public class TargetState : ScriptableObject
+public class TargetState : MonoBehaviour
 {
     private long seedId;
 
@@ -33,7 +33,9 @@ public class TargetState : ScriptableObject
     {
         Debug.Log("Create TargetState FromSeed");
 
-        TargetState result = ScriptableObject.CreateInstance<TargetState>();
+        GameObject newGo = new GameObject();
+        
+        TargetState result = newGo.AddComponent<TargetState>();
         const int rowCount = GameConstants.NUM_GAME_ROWS;
         Bean lastBean = null;
         bool matchesBean = true;
