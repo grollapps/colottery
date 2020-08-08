@@ -9,6 +9,8 @@ public class BetMap : ScriptableObject
     public const int BET_TWO_IDX = 1;
     public const int BET_FIVE_IDX = 2;
 
+    public const int MAX_BET_IDX = 3; //max index + 1
+
     /// <summary>
     /// Converts a bet index (arbitrary assignment) into
     /// a dollar amount represented by that index.

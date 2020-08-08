@@ -110,8 +110,7 @@ public class ActiveGameCard : MonoBehaviour
             }
             choices[r] = curBean;
         }
-        float betAmt = BetMap.GetBetFromIdx(betIdxSelected);
-        gc.FillCard(choices, isSecChanceSelected, betAmt);
+        gc.FillCard(choices, isSecChanceSelected, betIdxSelected);
         UpdateTotalWager();
 
         return gc;

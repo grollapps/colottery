@@ -72,6 +72,7 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("HandleSubmitGameCard");
         curGameCard.handleSubmit();
+        UIController.Instance.SetLastWinText(0);  //Clear previous win
     }
 
     /// <summary>
@@ -169,11 +170,13 @@ public class GameController : MonoBehaviour
         TargetState targetState = TargetState.FromSeed(seed);
         lastTargetState = targetState;
         AnimateToState(targetState);
+        float totalUserWin = 0;
         foreach (var entry in roundEntries)
         {
             WinInfo winInfo = EvalWin(targetState, entry.gameCardState);
-            entry.user.UpdateUser(winInfo, entry.gameCardState);
+            totalUserWin += entry.user.UpdateUser(winInfo, entry.gameCardState);
         }
+        UIController.Instance.SetLastWinText(totalUserWin);
         FinishRound(targetState);
     }
 
@@ -208,8 +211,7 @@ public class GameController : MonoBehaviour
     /// <returns></returns>
     WinInfo EvalWin(TargetState targetState, GameCardState gameCardState)
     {
-        //TODO
-        Debug.Log("TODO - EvalWin");
+        Debug.Log("EvalWin");
         WinInfo winInfo = new WinInfo();
 
         Bean secChanceBean = null;
@@ -221,6 +223,7 @@ public class GameController : MonoBehaviour
             secChanceRow = targetState.GetDrawRowForSecondChance();
         }
 
+        int numRowsWon = 0;
         for (int r = 0; r < targetState.GetNumRows(); r++)
         {
             Bean targetBean = targetState.GetDrawForRow(r);
@@ -239,15 +242,33 @@ public class GameController : MonoBehaviour
                 winInfo.SetRowWon(r, drawMatch);
             }
 
+            if (drawMatch)
+            {
+                numRowsWon++;
+            }
+
         }
 
-        //TODO win amount
-        Debug.Log("TODO - Win Amount");
-        //Set in WinInfo itself??
+        int betIdx = gameCardState.GetBetIndex();
+        if (betIdx < 0 || betIdx >= BetMap.MAX_BET_IDX)
+        {
+            throw new System.Exception("Invalid bet index: " + betIdx);
+        }
 
-        Debug.Log("TODO - won flush?");
         bool flushWon = false;
+        float flushWinAmt = 0;
+        if (flushWon)
+        {
+            flushWinAmt = Payouts.flushWin[betIdx];
+        }
         winInfo.SetFlushWon(flushWon);
+        Debug.Log("flushWon? " + flushWon + " => Win:" + flushWinAmt);
+
+        float matchWinAmt = Payouts.anyOrder_match[numRowsWon][betIdx];
+        Debug.Log("Matched:" + numRowsWon + ", betIdx:" + betIdx + " => Win:" + matchWinAmt);
+
+        float totalWin = matchWinAmt + flushWinAmt;
+        winInfo.SetTotalWin(totalWin);
 
         return winInfo;
     }

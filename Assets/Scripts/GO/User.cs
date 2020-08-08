@@ -10,6 +10,20 @@ public class User : MonoBehaviour
     public Stats stats;
     public float curBank = 0;
 
+    void Start()
+    {
+        if (stats == null)
+        {
+            stats = GetComponentInChildren<Stats>();
+            if (stats == null)
+            {
+                throw new System.Exception("Could not find stats for user: " + gameObject.name);
+            }
+        }
+
+        Debug.Log("User " + gameObject.name + "(" + userName + ") has stats object: " + stats.gameObject.name);
+    }
+
     /// <summary>
     /// Test if the user has enough funds to pay amt.  Returns true
     /// if so, false otherwise.
@@ -35,13 +49,30 @@ public class User : MonoBehaviour
     /// Updates this user object with WinInfo and a GameCardState
     /// representing the results of running a round with the submitted
     /// gameCardState. Stats are accumulated based on wagers and results.
+    /// Returns total amount of win.
     /// </summary>
     /// <param name="winInfo"></param>
     /// <param name="gameCardState"></param>
-    public void UpdateUser(WinInfo winInfo, GameCardState gameCardState)
+    public float UpdateUser(WinInfo winInfo, GameCardState gcs)
     {
-        //TODO
-        Debug.Log("TODO - Update user with winInfo");
-        AdjustBank(winInfo.GetLastWin());
+        Debug.Log("Update user with winInfo");
+        float totalWin = winInfo.GetLastWin();
+        AdjustBank(totalWin);
+
+        //update stats
+        Debug.Log("Update user stats");
+        float amtWagered = gcs.GetTotalWager();
+        stats.UpdateAmts(amtWagered, totalWin);
+
+        bool isWin = winInfo.IsWin();
+
+        //Currently 1 card per play
+        int numPlayed = 1;
+        int numWin = isWin ? 1 : 0;
+        int numSecChanceWin = winInfo.GetWonSecondChance() ? 1 : 0;
+        int numFlushWin = winInfo.GetFlushWon() ? 1 : 0;
+        stats.UpdatePlays(numPlayed, numWin, numSecChanceWin, numFlushWin);
+
+        return totalWin;
     }
 }

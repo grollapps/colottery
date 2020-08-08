@@ -9,7 +9,8 @@ public class GameCardState
 {
     private Bean[] choices = new Bean[GameConstants.NUM_GAME_ROWS];
     private bool enableSecondChance = false;
-    private float betAmt = 0; //base amount
+    private int betAmtIdx = -1; //Index of bet amount
+    private float betAmt = 0; //base amount as money (dollars)
     private float totalWager = 0;  //total amount
     private DateTime entryTimestamp;
 
@@ -25,8 +26,8 @@ public class GameCardState
     /// </summary>
     /// <param name="choices"></param>
     /// <param name="enableSecondChance"></param>
-    /// <param name="betAmt"></param>
-    public void FillCard(Bean[] choices, bool enableSecondChance, float betAmt)
+    /// <param name="betAmtIdx">Index for bet, used to lookup dollar amount of bet</param>
+    public void FillCard(Bean[] choices, bool enableSecondChance, int betAmtIdx)
     {
         Debug.Log("FillCard");
         entryTimestamp = System.DateTime.UtcNow;
@@ -35,7 +36,8 @@ public class GameCardState
             this.choices[i] = choices[i];
         }
         this.enableSecondChance = enableSecondChance;
-        this.betAmt = betAmt;
+        this.betAmtIdx = betAmtIdx;
+        betAmt = BetMap.GetBetFromIdx(betAmtIdx);
 
         totalWager = CalculateWager(betAmt, enableSecondChance);
     }
@@ -51,6 +53,15 @@ public class GameCardState
         }
 
         return total;
+    }
+
+    /// <summary>
+    /// Get the bet index which corresponds to the bet amount table (BetMap).
+    /// </summary>
+    /// <returns></returns>
+    public int GetBetIndex()
+    {
+        return betAmtIdx;
     }
 
     public bool IsSecondChanceEnabled()
