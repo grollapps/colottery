@@ -1747,6 +1747,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GridHolderUI
       objectReference: {fileID: 0}
+    - target: {fileID: 2188823897693953731, guid: c85a84faeea025b46b99b6dc7c17ad74, type: 3}
+      propertyPath: m_Text
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3682465764457979763, guid: c85a84faeea025b46b99b6dc7c17ad74, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2480,6 +2484,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GridHolderUI (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2188823897693953731, guid: c85a84faeea025b46b99b6dc7c17ad74, type: 3}
+      propertyPath: m_Text
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3682465764457979763, guid: c85a84faeea025b46b99b6dc7c17ad74, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2869,6 +2877,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4b8f05cb95c9c743a597d2e9e1e412a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  drawingTimeSec: 7
+  secChanceDrawingTimeSec: 3
 --- !u!1 &1176970671
 GameObject:
   m_ObjectHideFlags: 0
@@ -3865,6 +3875,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GridHolderUI
       objectReference: {fileID: 0}
+    - target: {fileID: 2188823897693953731, guid: c85a84faeea025b46b99b6dc7c17ad74, type: 3}
+      propertyPath: m_Text
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3682465764457979763, guid: c85a84faeea025b46b99b6dc7c17ad74, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4268,6 +4282,10 @@ PrefabInstance:
     - target: {fileID: 676766931836198793, guid: c85a84faeea025b46b99b6dc7c17ad74, type: 3}
       propertyPath: m_Name
       value: GridHolderUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 2188823897693953731, guid: c85a84faeea025b46b99b6dc7c17ad74, type: 3}
+      propertyPath: m_Text
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3682465764457979763, guid: c85a84faeea025b46b99b6dc7c17ad74, type: 3}
       propertyPath: m_LocalPosition.x
