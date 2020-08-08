@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ using UnityEngine;
 /// by a collection of BeanRows that each show a bean as it is drawn (selected randomly).
 /// A BeanRow renders in the target as a BeanGo which positions the data in the game world.
 /// </summary>
+[RequireComponent(typeof(BoardAnimController))]
 public class GameController : MonoBehaviour
 {
     //Static bean rows that display the target draws
@@ -35,9 +37,21 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private Timer timer;
 
+    private BoardAnimController boardAnimCtrl;
+
+    bool roundActive = false; //true while timer is at 0
+    bool waitingOnAnimation = false; //true while round is showing drawing
+
     void Start()
     {
-        Debug.Log("GameController start"); 
+        Debug.Log("GameController start");
+
+        boardAnimCtrl = GetComponent<BoardAnimController>();
+        if (boardAnimCtrl == null)
+        {
+            throw new System.Exception("Could not find board animation controller: " + gameObject.name);
+        }
+
         if (user == null)
         {
             throw new System.Exception("Could not find User instance: " + gameObject.name);
@@ -62,6 +76,18 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        if (roundActive)
+        {
+            if (waitingOnAnimation)
+            {
+                if (boardAnimCtrl.IsAnimDone())
+                {
+                    //drawing animations done, transition to end of drawing process
+                    waitingOnAnimation = false;
+                    PlayRoundEnd(); //should set roundActive = false when done
+                }
+            }
+        }
         
     }
 
@@ -98,7 +124,7 @@ public class GameController : MonoBehaviour
         Debug.Log("Target state created");
 
         Debug.Log("Showing target draws");
-        AnimateToState(targetState);
+        StartAnimateToState(targetState, 1.0f);
         Debug.Log("Done showing target draws");
 
         PlayRoundEnd();
@@ -130,8 +156,9 @@ public class GameController : MonoBehaviour
         TargetState targetState = TargetState._Dbg_FromColors(colors, secChanceColIdx, secChanceRow);
         lastTargetState = targetState;
 
+        roundActive = true;
         Debug.Log("Showing target draws");
-        AnimateToState(targetState);
+        StartAnimateToState(targetState, 1.0f);
         Debug.Log("Done showing target draws");
 
         PlayRoundEnd();
@@ -197,10 +224,18 @@ public class GameController : MonoBehaviour
     public void PlayRoundStart(long seed)
     {
         Debug.Log("GameController PlayRound");
-        ClearRound();  //Maybe should clear last round a bit before starting this round?
-        TargetState targetState = TargetState.FromSeed(seed);
-        lastTargetState = targetState;
-        AnimateToState(targetState);
+        if (roundActive == true)
+        {
+            Debug.Log("Round is already running");
+        }
+        else
+        {
+            roundActive = true;
+            ClearRound();  //Maybe should clear last round a bit before starting this round?
+            TargetState targetState = TargetState.FromSeed(seed);
+            lastTargetState = targetState;
+            StartAnimateToState(targetState, 0.0f);
+        }
     }
 
     /// <summary>
@@ -209,27 +244,39 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void PlayRoundEnd()
     {
-        float totalUserWin = 0;
-        foreach (var entry in roundEntries)
+        Debug.Log("PlayRoundEnd");
+        if (roundActive == false)
         {
-            WinInfo winInfo = EvalWin(lastTargetState, entry.gameCardState);
-            totalUserWin += entry.user.UpdateUser(winInfo, entry.gameCardState);
+            Debug.Log("Round is not active");
         }
-        UIController.Instance.SetLastWinText(totalUserWin);
-        FinishRound(lastTargetState);
+        else
+        {
+            float totalUserWin = 0;
+            foreach (var entry in roundEntries)
+            {
+                WinInfo winInfo = EvalWin(lastTargetState, entry.gameCardState);
+                totalUserWin += entry.user.UpdateUser(winInfo, entry.gameCardState);
+            }
+            UIController.Instance.SetLastWinText(totalUserWin); //TODO animation here would be nice
+            UpdateUserBankText(user);
+            FinishRound(lastTargetState);
+            roundActive = false;
+            waitingOnAnimation = false;
+        }
     }
 
     /// <summary>
     /// Take the current board state and transition it to targetState.
-    /// This function does not return until the transition is complete.
+    /// This function returns before the animation is complete.  Check
+    /// Animation status by querying the BoardAnimController.IsAnimDone().
     /// </summary>
     /// <param name="targetState"></param>
-    void AnimateToState(TargetState targetState)
+    /// <param name="paramT">value between 0 and 1 defining how far along
+    /// in the animation we are. 0 is start, 1 is end.</param>
+    void StartAnimateToState(TargetState targetState, float paramT)
     {
-        //TODO
-        Debug.Log("TODO - AnimateToState");
+        Debug.Log("StartAnimateToState");
 
-        //TODO - For now we will just show the ending positions
         int numRows = targetState.GetNumRows();
         for (int r = 0; r < numRows; r++)
         {
@@ -237,6 +284,9 @@ public class GameController : MonoBehaviour
             Bean rBean = targetState.GetDrawForRow(r);
             beanRows[r].SetBean(rBean);
         }
+        boardAnimCtrl.AnimateBeanDraws(beanRows, paramT);
+        waitingOnAnimation = true;
+
         Debug.Log("TODO - show second chance");
         Debug.Log("TODO - show flush");
     }

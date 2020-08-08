@@ -30,17 +30,8 @@ public class ActiveGameCard : MonoBehaviour
 
         rowSelections = new int[numRows];
         rowButtons = new FillButton[numRows];
-        for (int i = 0; i < rowSelections.Length; i++)
-        {
-            rowSelections[i] = -1;
-            rowButtons[i] = null;
-        }
 
-        isSecChanceSelected = false;
-        secChanceButton = null;
-
-        betIdxSelected = -1;
-        betButton = null;
+        ClearCard();
 
         gameController = FindObjectOfType<GameController>();
         if (gameController == null)
@@ -64,6 +55,11 @@ public class ActiveGameCard : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Copies the active game card to a game card state, submits
+    /// it to the game controller and clears the active card so it
+    /// is ready for a new set of entries.
+    /// </summary>
     public void handleSubmit()
     {
         Debug.Log("handleSubmit active game card");
@@ -71,6 +67,39 @@ public class ActiveGameCard : MonoBehaviour
         //TODO might want to check that everything is filled in
         Debug.Log("TODO error check");
         gameController.EnterNextRound(user, gameCard);
+        ClearCard();
+    }
+
+  
+    /// <summary>
+    /// Clears the active game card of any user selections
+    /// </summary>
+    public void ClearCard()
+    {
+        Debug.Log("ClearCard");
+        for (int i = 0; i < rowSelections.Length; i++)
+        {
+            rowSelections[i] = -1;
+            if (rowButtons[i] != null)
+            {
+                rowButtons[i].SetSelected(false);
+            }
+            rowButtons[i] = null;
+        }
+
+        isSecChanceSelected = false;
+        if (secChanceButton != null)
+        {
+            secChanceButton.SetSelected(false);
+        }
+        secChanceButton = null;
+
+        betIdxSelected = -1;
+        if (betButton != null)
+        {
+            betButton.SetSelected(false);
+        }
+        betButton = null;
     }
 
     /// <summary>

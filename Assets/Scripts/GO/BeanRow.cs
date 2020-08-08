@@ -18,7 +18,17 @@ public class BeanRow : MonoBehaviour
     //These keep quick references to the current content
     private int beanColIdx = -1;
     private Bean beanObj = null;
+    //This is the actual model of the bean as seen in game
     private BeanGo beanGo = null;
+
+    //Where the bean starts its life before animation
+    private Vector3 startAnimPos;
+    //Target position where the next bean will transition to
+    private Vector3 targetPos;
+
+    private bool isAnimating = false;
+    private float animStartTime = 0.0f;
+    private float endAnimTime = 0.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +40,50 @@ public class BeanRow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (isAnimating)
+        {
+            AnimateFrame();
+        }
+    }
+
+    /// <summary>
+    /// Start an animation on the bean for this row
+    /// </summary>
+    /// <param name="durationSec">max length of animation in seconds</param>
+    /// <param name="startingT">value between 0 and 1, parameter of where
+    /// to start the animation (0 is start, 1 is end)</param>
+    public void BeginAnimation(float durationSec, float startingT)
+    {
+        animStartTime = Time.time;
+        endAnimTime = Time.time + (durationSec * (1.0f - startingT));
+        isAnimating = true;
+        //actual animation happens via Update
+
+        if (startingT >= 1.0f || durationSec <= 0)
+        {
+            isAnimating = false;
+            SetPosition(targetPos);
+        }
+    }
+
+    private void AnimateFrame()
+    {
+        float paramT = (Time.time - animStartTime) / (endAnimTime - animStartTime);
+        if (paramT >= 1.0f)
+        {
+            isAnimating = false;
+            SetPosition(targetPos);
+        }
+        else
+        {
+            Vector3 pos = Vector3.Lerp(startAnimPos, targetPos, paramT);
+            SetPosition(pos);
+        }
+    }
+
+    public bool IsAnimating()
+    {
+        return isAnimating;
     }
 
     /// <summary>
@@ -49,16 +102,25 @@ public class BeanRow : MonoBehaviour
         beanGo.SetProps(bean);
         //Validate col num here?
         beanColIdx = BeanMap.GetColIndex(bean);
-        SetPosition(beanGo.gameObject, beanColIdx);
+        isAnimating = false;
+        targetPos = GetTargetPosition(beanColIdx);
+        //TODO initial pos should depend on where bean is coming from
+        startAnimPos = new Vector3(targetPos.x, targetPos.y + 20, targetPos.z);
+        SetPosition(startAnimPos);
     }
 
-    private void SetPosition(GameObject go, int colNum)
+    private Vector3 GetTargetPosition(int colNum)
     {
         //assumes rows span across the page
         float x = anchorPos.x + (colNum * cellGap);
         float y = anchorPos.y;
         float z = anchorPos.z;
-        go.transform.position = new Vector3(x, y, z);
+        return new Vector3(x, y, z);
+    }
+
+    private void SetPosition(Vector3 pos)
+    {
+        beanGo.transform.position = pos;
     }
 
     /// <summary>
