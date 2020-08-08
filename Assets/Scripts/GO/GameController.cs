@@ -44,6 +44,9 @@ public class GameController : MonoBehaviour
         {
             throw new System.Exception("No game card set: " + gameObject.name);
         }
+
+        UpdateUserBankText(user);
+        UpdateWinText(null);
     }
 
     void Update()
@@ -111,6 +114,24 @@ public class GameController : MonoBehaviour
         {
             //TODO
             Debug.Log("TODO - User can't afford entry");
+        }
+        UpdateUserBankText(user);
+    }
+
+    public void UpdateUserBankText(User user)
+    {
+        UIController.Instance.SetBankText(user.curBank);
+    }
+
+    public void UpdateWinText(WinInfo winInfo)
+    {
+        if (winInfo == null || winInfo.lastWin <= 0)
+        {
+            UIController.Instance.SetLastWinText(0);
+        }
+        else
+        {
+            UIController.Instance.SetLastWinText(winInfo.lastWin);
         }
     }
 

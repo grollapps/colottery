@@ -5,7 +5,8 @@ using UnityEditor;
 /// Holds information about a win/loss as computed from a targetState and
 /// GameCardState.
 /// </summary>
-public class WinInfo : ScriptableObject
+public class WinInfo : MonoBehaviour
 {
-    //TODO
+
+    public float lastWin { get; set; }
 }
