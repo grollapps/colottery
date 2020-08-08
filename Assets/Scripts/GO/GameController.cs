@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using UnityEditor;
 using UnityEngine;
 
 /// <summary>
@@ -171,7 +169,7 @@ public class GameController : MonoBehaviour
         Debug.Log("TODO - random seed");
         long seed = 1234;
         PlayRoundStart(seed);
-        PlayRoundEnd();
+        //Don't immediately play round end; wait for animations of drawing to finish
     }
 
     /// <summary>

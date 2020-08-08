@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
-using System.Runtime.ConstrainedExecution;
 
 public class BetMap : ScriptableObject
 {

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Runtime.CompilerServices;
 
 /// <summary>
 /// Fill buttons, specifically in the color selection grid.

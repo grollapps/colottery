@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 
 /// <summary>
 /// Attributes of a single object in the game. Represents a "bean" in the literal
