@@ -7,8 +7,6 @@ using System;
 /// </summary>
 public class GameCardState
 {
-    //TODO fields:
-    //selections, secondChance, bet amount, total wager, etc
     private Bean[] choices = new Bean[GameConstants.NUM_GAME_ROWS];
     private bool enableSecondChance = false;
     private float betAmt = 0; //base amount
@@ -59,4 +57,20 @@ public class GameCardState
     {
         return enableSecondChance;
     }
+
+    /// <summary>
+    /// Get the bean choice for the given row.
+    /// Assumes the GameCardState is already initialized.
+    /// </summary>
+    /// <param name="row"></param>
+    /// <returns></returns>
+    public Bean GetChoiceForRow(int row)
+    {
+        if (row >= choices.Length || choices[row] == null)
+        {
+            throw new Exception("Invalid choice row " + row + " (forgot to init entry?)");
+        }
+        return choices[row];
+    }
+
 }

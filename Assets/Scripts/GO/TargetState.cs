@@ -91,6 +91,30 @@ public class TargetState : MonoBehaviour
         return draws[row];
     }
 
+    /// <summary>
+    /// Get the Second Chance bean.  Note you also need to get the
+    /// row since the result is specific to a row.
+    /// Assumes the second chance drawing has already happened.
+    /// </summary>
+    /// <returns></returns>
+    public Bean GetDrawBeanForSecondChance()
+    {
+        if (secondChanceDraw.bean == null)
+        {
+            throw new System.Exception("Second chance drawing not performed");
+        }
+        return secondChanceDraw.bean;
+    }
+
+    /// <summary>
+    /// Get the Second Chance row (where the second chance bean landed).
+    /// </summary>
+    /// <returns></returns>
+    public int GetDrawRowForSecondChance()
+    {
+        return secondChanceDraw.row;
+    }
+
 
     /// <summary>
     /// Do a drawing for the 'second chance' bean given a seed.  It is possible

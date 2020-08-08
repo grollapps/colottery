@@ -41,5 +41,7 @@ public class User : MonoBehaviour
     public void UpdateUser(WinInfo winInfo, GameCardState gameCardState)
     {
         //TODO
+        Debug.Log("TODO - Update user with winInfo");
+        AdjustBank(winInfo.GetLastWin());
     }
 }

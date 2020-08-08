@@ -16,7 +16,7 @@ using UnityEngine;
 /// </summary>
 public class GameController : MonoBehaviour
 {
-    //Statis bean rows that display the target draws
+    //Static bean rows that display the target draws
     [SerializeField]
     private List<BeanRow> beanRows;
 
@@ -141,13 +141,13 @@ public class GameController : MonoBehaviour
 
     public void UpdateWinText(WinInfo winInfo)
     {
-        if (winInfo == null || winInfo.lastWin <= 0)
+        if (winInfo == null || winInfo.GetLastWin() <= 0)
         {
             UIController.Instance.SetLastWinText(0);
         }
         else
         {
-            UIController.Instance.SetLastWinText(winInfo.lastWin);
+            UIController.Instance.SetLastWinText(winInfo.GetLastWin());
         }
     }
 
@@ -207,7 +207,46 @@ public class GameController : MonoBehaviour
     {
         //TODO
         Debug.Log("TODO - EvalWin");
-        return null;
+        WinInfo winInfo = new WinInfo();
+
+        Bean secChanceBean = null;
+        int secChanceRow = -1;
+        //Only check second chance if user selected that option
+        if (gameCardState.IsSecondChanceEnabled())
+        {
+            secChanceBean = targetState.GetDrawBeanForSecondChance();
+            secChanceRow = targetState.GetDrawRowForSecondChance();
+        }
+
+        for (int r = 0; r < targetState.GetNumRows(); r++)
+        {
+            Bean targetBean = targetState.GetDrawForRow(r);
+            Bean entryBean = gameCardState.GetChoiceForRow(r);
+            bool drawMatch = targetBean.IsEqual(entryBean);
+            if (drawMatch == false && secChanceBean != null && r == secChanceRow)
+            {
+                drawMatch = secChanceBean.IsEqual(entryBean); //Check if 2nd chance matches
+                if (drawMatch)
+                {
+                    winInfo.SetSecondChanceWon(true);
+                }
+            }
+            else
+            {
+                winInfo.SetRowWon(r, drawMatch);
+            }
+
+        }
+
+        //TODO win amount
+        Debug.Log("TODO - Win Amount");
+        //Set in WinInfo itself??
+
+        Debug.Log("TODO - won flush?");
+        bool flushWon = false;
+        winInfo.SetFlushWon(flushWon);
+
+        return winInfo;
     }
 
     /// <summary>
