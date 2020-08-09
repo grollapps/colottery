@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Game object representing a bean.
+/// </summary>
 public class BeanGo : MonoBehaviour
 {
-
     private Bean props;
 
     public void SetProps(Bean bean)
@@ -12,13 +14,4 @@ public class BeanGo : MonoBehaviour
 
     }
 
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
-    }
 }

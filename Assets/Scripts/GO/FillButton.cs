@@ -54,4 +54,10 @@ public class FillButton : MonoBehaviour
             myImage.color = unSelectedColor;
         }
     }
+
+    public void DisableButton()
+    {
+        Button btn = GetComponent<Button>();
+        btn.interactable = false;
+    }
 }

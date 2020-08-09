@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Runtime.CompilerServices;
+using UnityEngine;
 
 public class ActiveGameCard : MonoBehaviour
 {
@@ -64,7 +65,7 @@ public class ActiveGameCard : MonoBehaviour
         GameCardState gameCard = CreateGameCard();
         //TODO might want to check that everything is filled in
         Debug.Log("TODO error check");
-        gameController.EnterNextRound(user, gameCard);
+        gameController.EnterNextRound(user, this, gameCard);
         ClearCard();
     }
 
@@ -223,5 +224,32 @@ public class ActiveGameCard : MonoBehaviour
         float secChanceVal = isSecChanceSelected ? GameConstants.SECOND_CHANCE_COST : 0;
         float totalWager = betVal + secChanceVal;
         UIController.Instance.SetWagerText(totalWager);
+    }
+
+
+    /// <summary>
+    /// Clones this board as-is.  The returned clone will look the same but
+    /// all buttons will be disabled.
+    /// </summary>
+    /// <returns></returns>
+    public ActiveGameCard CreateClone()
+    {
+        GameObject cloneObj = Instantiate<GameObject>(gameObject);
+        ActiveGameCard cloneCard = cloneObj.GetComponent<ActiveGameCard>();
+        cloneCard.DisableInput();
+        return cloneCard;
+    }
+
+    public void DisableInput()
+    {
+        Debug.Log("DisableInput: " + gameObject.name);
+        FillButton[] allButtons = GetComponentsInChildren<FillButton>();
+        if (allButtons != null)
+        {
+            for (int i = 0; i < allButtons.Length; i++)
+            {
+                allButtons[i].DisableButton();
+            }
+        }
     }
 }

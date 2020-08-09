@@ -15,12 +15,15 @@ using UnityEngine;
 [RequireComponent(typeof(BoardAnimController))]
 public class GameController : MonoBehaviour
 {
-    //Static bean rows that display the target draws
+    //Static bean rows that display the target draws. Includes the second chance drawing row.
     [SerializeField]
     private List<BeanRow> beanRows;
 
     //Tracks Entries submitted by users for playing in the next round
     private List<(User user, GameCardState gameCardState)> roundEntries = new List<(User, GameCardState)>();
+
+    //Tracks actual boards used by the user
+    private List<(User user, ActiveGameCard gameBoard)> entryBoards = new List<(User, ActiveGameCard)>();
 
     private TargetState lastTargetState = null;
 
@@ -34,7 +37,16 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private Timer timer;
 
+    private Canvas canvas;
+
     private BoardAnimController boardAnimCtrl;
+
+    //Determines where the left-most entry card is displayed
+    [SerializeField]
+    private Vector3 entryCardPos;
+
+    [SerializeField]
+    private float entryCardScale = 0.55f;
 
     bool roundActive = false; //true while timer is at 0
     bool waitingOnAnimation = false; //true while round is showing drawing
@@ -62,6 +74,14 @@ public class GameController : MonoBehaviour
         if (timer == null)
         {
             throw new System.Exception("No timer set: " + gameObject.name);
+        }
+
+        //Get a reference to the main UI canvas.  Note this probably won't work right if
+        //there are multiple Canvases
+        canvas = FindObjectOfType<Canvas>();
+        if (canvas == null)
+        {
+            throw new System.Exception("Could not find Canvas object");
         }
 
         UpdateUserBankText(user);
@@ -175,8 +195,9 @@ public class GameController : MonoBehaviour
     /// Enter the User with the given GameCardState into the next playable round.
     /// </summary>
     /// <param name="user"></param>
+    /// <param name="board"></param>
     /// <param name="gameCard"></param>
-    public void EnterNextRound(User user, GameCardState gameCard)
+    public void EnterNextRound(User user, ActiveGameCard board, GameCardState gameCard)
     {
         Debug.Log("GameController EnterNextRound");
         float entryAmt = gameCard.GetTotalWager();
@@ -184,18 +205,36 @@ public class GameController : MonoBehaviour
         {
             user.AdjustBank(-entryAmt);
             roundEntries.Add((user, gameCard));
+            //board clone is initially disabled and not visible (until added to the UI canvas)
+            ActiveGameCard boardClone = board.CreateClone();
+            entryBoards.Add((user, boardClone));
         }
         else
         {
             //TODO
             Debug.Log("TODO - User can't afford entry");
         }
+        UpdateUserBoardEntries();
         UpdateUserBankText(user);
     }
 
     public void UpdateUserBankText(User user)
     {
         UIController.Instance.SetBankText(user.curBank);
+    }
+
+    /// <summary>
+    /// Update rendering of the entries the user has submitted
+    /// </summary>
+    private void UpdateUserBoardEntries()
+    {
+        foreach (var entry in entryBoards)
+        {
+            Transform boardT = entry.gameBoard.transform;
+            boardT.SetParent(canvas.gameObject.transform);
+            boardT.localScale = new Vector3(entryCardScale, entryCardScale, entryCardScale);
+            boardT.position = entryCardPos;
+        }
     }
 
     public void UpdateWinText(WinInfo winInfo)
@@ -281,6 +320,12 @@ public class GameController : MonoBehaviour
             Bean rBean = targetState.GetDrawForRow(r);
             beanRows[r].SetBean(rBean);
         }
+
+        //Add second chance bean at end
+        Bean secChanceBean = targetState.GetDrawBeanForSecondChance();
+        int secChanceRow = targetState.GetDrawRowForSecondChance();
+        beanRows[numRows].SetBean(secChanceBean, secChanceRow);
+
         boardAnimCtrl.AnimateBeanDraws(beanRows, paramT);
         waitingOnAnimation = true;
 
@@ -373,7 +418,7 @@ public class GameController : MonoBehaviour
         if (lastTargetState != null)
         {
             Debug.Log("ClearRound");
-            int numRows = lastTargetState.GetNumRows();
+            int numRows = beanRows.Count;
             for (int r = 0; r < numRows; r++)
             {
                 beanRows[r].Reset();

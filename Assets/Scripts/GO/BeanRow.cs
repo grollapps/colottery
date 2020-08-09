@@ -8,10 +8,10 @@ public class BeanRow : MonoBehaviour
     [SerializeField]
     private BeanGo beanGoPrefab;
 
-    private Vector3 anchorPos;
+    protected Vector3 anchorPos;
 
     [SerializeField]
-    private float cellGap;
+    protected float cellGap;
 
     //These keep quick references to the current content
     private int beanColIdx = -1;
@@ -32,7 +32,7 @@ public class BeanRow : MonoBehaviour
     void Start()
     {
         anchorPos = transform.position;
-        
+
     }
 
     // Update is called once per frame
@@ -86,9 +86,24 @@ public class BeanRow : MonoBehaviour
 
     /// <summary>
     /// After creating the bean this should be called to populate its properties.
+    /// This will create the appropriate bean color and position.
     /// </summary>
     /// <param name="bean"></param>
-    public void SetBean(Bean bean)
+    public void SetBean(Bean bean){
+        if (beanGo != null)
+        {
+            throw new System.Exception("Previous bean in row not cleaned up: " + beanGo.name);
+        }
+        int idx = BeanMap.GetColIndex(bean);
+        SetBean(bean, idx);
+    }
+
+    /// <summary>
+    /// After creating the bean this should be called to populate its properties.
+    /// </summary>
+    /// <param name="bean"></param>
+    /// <param name="idx">Specify grid to place bean in.</param>
+    public void SetBean(Bean bean, int idx)
     {
         if (beanGo != null)
         {
@@ -99,15 +114,15 @@ public class BeanRow : MonoBehaviour
         beanGo = GameObject.Instantiate<BeanGo>(beanGoPrefab);
         beanGo.SetProps(bean);
         //Validate col num here?
-        beanColIdx = BeanMap.GetColIndex(bean);
         isAnimating = false;
+        beanColIdx = idx;
         targetPos = GetTargetPosition(beanColIdx);
         //TODO initial pos should depend on where bean is coming from
         startAnimPos = new Vector3(targetPos.x, targetPos.y + 20, targetPos.z);
         SetPosition(startAnimPos);
     }
 
-    private Vector3 GetTargetPosition(int colNum)
+    protected virtual Vector3 GetTargetPosition(int colNum)
     {
         //assumes rows span across the page
         float x = anchorPos.x + (colNum * cellGap);
