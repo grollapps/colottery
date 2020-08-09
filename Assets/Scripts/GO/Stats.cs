@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Reflection.Emit;
 
 /// <summary>
 /// General game stats defined for a single user.
