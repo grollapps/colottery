@@ -52,16 +52,19 @@ public class EntryButton : MonoBehaviour
     public void Show(bool showWin)
     {
         gameObject.SetActive(true);
-        ColorBlock cb = myButton.colors;
-        if (showWin)
+        if (myButton != null)
         {
-            cb.normalColor = winColor;
+            ColorBlock cb = myButton.colors;
+            if (showWin)
+            {
+                cb.normalColor = winColor;
+            }
+            else
+            {
+                cb.normalColor = normalColor;
+            }
+            myButton.colors = cb;
         }
-        else
-        {
-            cb.normalColor = normalColor;
-        }
-        myButton.colors = cb;
     }
 
     public void SetClickIndex(int idx)
