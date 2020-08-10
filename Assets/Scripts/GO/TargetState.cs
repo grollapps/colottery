@@ -173,6 +173,7 @@ public class TargetState : MonoBehaviour
     private static (Bean bean, int row) GetBeanForSecondChance(long seed)
     {
         const int mockRow = GameConstants.NUM_GAME_ROWS + 1;
+        UnityEngine.Random.InitState((int)seed);
         Bean draw = GetBeanForRow(seed, mockRow);
         int row = GetRandomRow(seed);
         //TODO need to check if the given row has the given bean
@@ -188,13 +189,10 @@ public class TargetState : MonoBehaviour
     /// <returns></returns>
     private static Bean GetBeanForRow(long seed, int rowNum)
     {
-        //TODO randomize return value according to seed
-        Debug.Log("TODO - GetBeanForRow - randomize");
-        int numRows = 10; //
-        int randResult =  UnityEngine.Random.Range(0, numRows);
-        //TODO - numColors should be based on colors in row
         int numColors = 5;
-        Bean resultBean = GetBeanByColorIndex(randResult % numColors);
+        UnityEngine.Random.InitState((int)seed+rowNum);
+        int randResult = UnityEngine.Random.Range(0, numColors);
+        Bean resultBean = GetBeanByColorIndex(randResult);
         return resultBean;
     }
 
@@ -241,9 +239,7 @@ public class TargetState : MonoBehaviour
     /// <returns></returns>
     private static int GetRandomRow(long seed)
     {
-        //TODO - randomize result according to seed
-        Debug.Log("TODO - GetRandomRow - randomize");
-        return 0;
+        return UnityEngine.Random.Range(0, 5);
     }
 
     public bool HasFlush()

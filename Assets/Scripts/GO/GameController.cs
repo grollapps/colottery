@@ -146,6 +146,7 @@ public class GameController : MonoBehaviour
         return user;
     }
 
+    static int _dbg_testSeed = 1234;
     //TODO - remove, debug only
     public void _Dbg_Start_Round()
     {
@@ -153,7 +154,7 @@ public class GameController : MonoBehaviour
         ClearRound();
         //This can adapt to call PlayRound once ready
         Debug.Log("Creating target state");
-        TargetState targetState = TargetState.FromSeed(1234);
+        TargetState targetState = TargetState.FromSeed(_dbg_testSeed++);
         lastTargetState = targetState;
         Debug.Log("Target state created");
 
@@ -203,7 +204,7 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("HandleTimerExpire");
         Debug.Log("TODO - random seed");
-        long seed = 1234;
+        long seed = Random.Range(0, 2000000);
         PlayRoundStart(seed);
         //Don't immediately play round end; wait for animations of drawing to finish
     }
@@ -412,7 +413,12 @@ public class GameController : MonoBehaviour
         winInfo.SetFlushWon(flushWon);
         Debug.Log("flushWon? " + flushWon + " => Win:" + flushWinAmt);
 
-        float matchWinAmt = Payouts.anyOrder_match[numRowsWon][betIdx];
+        float matchWinAmt;
+        if (gameCardState.IsSecondChanceEnabled()) {
+            matchWinAmt = Payouts.secc_anyOrder_match[numRowsWon][betIdx];
+        } else {
+            matchWinAmt = Payouts.anyOrder_match[numRowsWon][betIdx];
+        }
         Debug.Log("Matched:" + numRowsWon + ", betIdx:" + betIdx + " => Win:" + matchWinAmt);
 
         float totalWin = matchWinAmt + flushWinAmt;

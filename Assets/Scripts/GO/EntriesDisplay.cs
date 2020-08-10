@@ -96,9 +96,12 @@ public class EntriesDisplay : MonoBehaviour
         board.gameObject.name = "EntryDisplay Board " + curBoardCount;
         Debug.Log("AddBoardToDisplay: " + board.gameObject.name);
         Transform boardT = board.transform;
-        boardT.SetParent(canvas.gameObject.transform);
+        //boardT.SetParent(canvas.gameObject.transform, false);
         boardT.localScale = new Vector3(entryCardScale, entryCardScale, entryCardScale);
-        boardT.position = entryCardPos;
+        boardT.SetParent(gameObject.transform, false);
+        RectTransform rt = board.GetComponent<RectTransform>();
+        rt.localPosition = entryCardPos;
+        //boardT.position = entryCardPos;
         curBoards[curBoardCount++] = board;
         board.gameObject.SetActive(false); //initially hidden
         UpdateButtons();

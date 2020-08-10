@@ -12,7 +12,7 @@ public class BeanRowVertical : BeanRow
     {
         //assumes rows span across the page
         float x = anchorPos.x;
-        float y = anchorPos.y + (colNum * cellGap);
+        float y = anchorPos.y - (colNum * cellGap);
         float z = anchorPos.z;
         return new Vector3(x, y, z);
     }
