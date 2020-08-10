@@ -37,16 +37,13 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private Timer timer;
 
-    private Canvas canvas;
-
     private BoardAnimController boardAnimCtrl;
 
-    //Determines where the left-most entry card is displayed
     [SerializeField]
-    private Vector3 entryCardPos;
+    private EntriesDisplay entriesDisplay;
 
     [SerializeField]
-    private float entryCardScale = 0.55f;
+    private ErrorBubble maxEntriesError;
 
     bool roundActive = false; //true while timer is at 0
     bool waitingOnAnimation = false; //true while round is showing drawing
@@ -76,16 +73,19 @@ public class GameController : MonoBehaviour
             throw new System.Exception("No timer set: " + gameObject.name);
         }
 
-        //Get a reference to the main UI canvas.  Note this probably won't work right if
-        //there are multiple Canvases
-        canvas = FindObjectOfType<Canvas>();
-        if (canvas == null)
+        if (entriesDisplay == null)
         {
-            throw new System.Exception("Could not find Canvas object");
+            throw new System.Exception("No entries display set: " + gameObject.name);
+        }
+
+        if (maxEntriesError == null)
+        {
+            throw new System.Exception("Max entries msg not set: " + gameObject.name);
         }
 
         UpdateUserBankText(user);
         UpdateWinText(null);
+        UpdateUserBoardEntries();
 
         //Initially the timer will be counting down
         timer.StartTimer();
@@ -114,8 +114,25 @@ public class GameController : MonoBehaviour
     public void HandleSubmitGameCard()
     {
         Debug.Log("HandleSubmitGameCard");
-        curGameCard.handleSubmit();
+        if (entryBoards.Count >= GameConstants.MAX_ENTRIES_PER_ROUND)
+        {
+            ShowMaxEntriesReachedError();
+        }
+        else
+        {
+            curGameCard.handleSubmit();
+        }
         UIController.Instance.SetLastWinText(0);  //Clear previous win
+    }
+
+    private void ShowMaxEntriesReachedError()
+    {
+        maxEntriesError.Show();
+    }
+
+    private void HideErrors()
+    {
+        maxEntriesError.Hide();
     }
 
     /// <summary>
@@ -228,12 +245,12 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void UpdateUserBoardEntries()
     {
+        Debug.Log("UpdateUserBoardEntries size:" + entryBoards.Count);
+        //We could add incrementally but for now just nuke everything and re-add
+        entriesDisplay.Reset();
         foreach (var entry in entryBoards)
         {
-            Transform boardT = entry.gameBoard.transform;
-            boardT.SetParent(canvas.gameObject.transform);
-            boardT.localScale = new Vector3(entryCardScale, entryCardScale, entryCardScale);
-            boardT.position = entryCardPos;
+            entriesDisplay.AddBoardToDisplay(entry.gameBoard.CreateClone());
         }
     }
 
@@ -410,11 +427,17 @@ public class GameController : MonoBehaviour
     void FinishRound(TargetState targetState)
     {
         roundEntries.Clear();
+        foreach (var entry in entryBoards)
+        {
+            Destroy(entry.gameBoard.gameObject);
+        }
+        entryBoards.Clear();
         timer.Reset(true);
     }
 
     void ClearRound()
     {
+        HideErrors();
         if (lastTargetState != null)
         {
             Debug.Log("ClearRound");

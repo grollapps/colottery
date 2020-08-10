@@ -22,9 +22,16 @@ public class ActiveGameCard : MonoBehaviour
 
     private User user;
 
+    [SerializeField]
+    private ErrorBubble noBetSelectedError;
+
+    [SerializeField]
+    private ErrorBubble notAllRowsSelectedError;
+
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Start: ActiveGameCard " + gameObject.name);
         numRows = GameConstants.NUM_GAME_ROWS;
 
         rowSelections = new int[numRows];
@@ -45,6 +52,17 @@ public class ActiveGameCard : MonoBehaviour
             throw new System.Exception("Could not find User instance: " + gameObject.name);
         }
 
+        if (noBetSelectedError == null)
+        {
+            throw new System.Exception("missing no bet error: " + gameObject.name);
+        }
+
+        if (notAllRowsSelectedError == null)
+        {
+            throw new System.Exception("missing no row error: " + gameObject.name);
+        }
+
+
         UpdateTotalWager();
     }
 
@@ -63,10 +81,15 @@ public class ActiveGameCard : MonoBehaviour
     {
         Debug.Log("handleSubmit active game card");
         GameCardState gameCard = CreateGameCard();
-        //TODO might want to check that everything is filled in
-        Debug.Log("TODO error check");
-        gameController.EnterNextRound(user, this, gameCard);
-        ClearCard();
+        if (gameCard == null)
+        {
+            Debug.Log("Card not submitted due to errors");
+        }
+        else
+        {
+            gameController.EnterNextRound(user, this, gameCard);
+            ClearCard();
+        }
     }
 
   
@@ -110,6 +133,7 @@ public class ActiveGameCard : MonoBehaviour
     {
         GameCardState gc = new GameCardState();
         Bean[] choices = new Bean[numRows];
+        int numNull = 0;
         for (int r = 0; r < choices.Length; r++)
         {
             Bean curBean = null;
@@ -135,13 +159,55 @@ public class ActiveGameCard : MonoBehaviour
                     curBean = ScriptableObject.CreateInstance<WhiteBean>();
                     break;
 
+                default:
+                    numNull++;
+                    break;
             }
             choices[r] = curBean;
         }
-        gc.FillCard(choices, isSecChanceSelected, betIdxSelected);
+        if (numNull > 0)
+        {
+            ShowCardNotFilledError();
+            gc = null; 
+        }
+        else
+        {
+            if (betIdxSelected < 0)
+            {
+                ShowBetNotSelectedError();
+                gc = null;
+            }
+            else
+            {
+                gc.FillCard(choices, isSecChanceSelected, betIdxSelected);
+            }
+        }
+
         UpdateTotalWager();
 
+        if (gc != null)
+        {
+            HideAllErrorMessages();
+        }
         return gc;
+    }
+
+    private void ShowCardNotFilledError()
+    {
+        Debug.Log("Show not filled Error");
+        notAllRowsSelectedError.Show();
+    }
+
+    private void ShowBetNotSelectedError()
+    {
+        Debug.Log("Show no bet error");
+        noBetSelectedError.Show();
+    }
+
+    private void HideAllErrorMessages()
+    {
+        notAllRowsSelectedError.Hide();
+        noBetSelectedError.Hide();
     }
 
     /// <summary>

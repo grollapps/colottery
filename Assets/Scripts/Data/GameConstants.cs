@@ -15,4 +15,7 @@ public class GameConstants
 
     public const int SEC_BETWEEN_ROUNDS = 4 * 60; //4 mins
 
+    //This is arbitrary but helps keep the screen tidy
+    public const int MAX_ENTRIES_PER_ROUND = 6;
+
 }

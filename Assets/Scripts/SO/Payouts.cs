@@ -14,7 +14,7 @@ public class Payouts : ScriptableObject
 
     //TODO - add in to payout equation.  Probability of a flush is roughly the
     //same as 4 unordered picks.
-    public static float[] flushWin = new float[]{ 100.0f, 200.0f, 500.0f };
+    public static float[] flushWin = new float[]{ 75.0f, 150.0f, 400.0f };
 
     //Any order of rows containing a match.  These are mutually exclusive
     //of eachother (i.e don't add a match_1 and match_2 if 2 are matches).
